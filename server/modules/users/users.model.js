@@ -25,10 +25,6 @@ const User = new Schema({
     password: {
         type: String,
     },
-    fullname: {
-        type: String,
-        required: true,
-    },
     roles: {
         type: [{
             type: String,

@@ -1,5 +1,7 @@
 {
     "PORT": 3000,
     "DB_URL": "mongodb://127.0.0.1:27017/smpm",
-    "SECRET": "sshhhItsSecret!"
+    "SECRET": "sshhhItsSecret!",
+    "FACEBOOK_PAGEID": "116742933513339",
+    "FACEBOOK_PAGE_ACCESS_TOKEN": "EAAv2RrG1DPoBANZAObENM2oKUZBMB2ljK8x1OSqlROgzQZCZADt1jjTTAge26th3RcAzbgJr8yZAWjZB03IkvnnH5a4ApOkTzHqxy45Jj4Qq8b8Yuu9tamgEys453RAZBLg9HKBfbPe6noGwk0gTLc8A3CucRCQDzDra9uHvfurIK0t5yQKP0bs"
 }

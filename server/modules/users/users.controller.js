@@ -5,19 +5,18 @@ const path = require("path"),
 //logs out user
 const logout = function (req, res) {
     req.logout();
-    return res.redirect('/');
+    return res.status(200).send("Success");
 }
 
 //for new user registration
 const register = function (req, res) {
-    if (!req.body || !req.body.username || !req.body.email || !req.body.password || !req.body.fullname) {
+    if (!req.body || !req.body.username || !req.body.email || !req.body.password) {
         return res.status(400).send('Bad Request');
     }
 
     var userData = {
         username: req.body.username,
         email: req.body.email,
-        fullname: req.body.fullname,
     }
 
     User.register(new User(userData), req.body.password, function (err, user) {
@@ -25,13 +24,13 @@ const register = function (req, res) {
             console.log(err, new Date());
             return res.status(500).send(err.message);
         }
-        return login(req, res);
+        return res.status(200).send("Success");
     });
 }
 
 //for user login
 const login = function (req, res) {
-    return res.redirect('/');
+    return res.status(200).send("Success");
 }
 
 module.exports = {

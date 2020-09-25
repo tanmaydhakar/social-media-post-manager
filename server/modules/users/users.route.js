@@ -5,11 +5,11 @@ const path = require('path'),
 module.exports = function (app) {
 
     //for user login
-    app.post('/login', passport.authenticate('local'), userController.login);
+    app.post('/api/login', passport.authenticate('local'), userController.login);
 
     //for user registration
-    app.post('/register', userController.register);
+    app.post('/api/register', userController.register);
 
     //for user logout
-    app.get('/logout', userController.logout);
+    app.get('/api/logout', userController.logout);
 };

@@ -1,0 +1,10 @@
+.page-container {
+    height: 100%;
+    background: rgb(35, 42, 58);
+}
+
+.sidebar {
+    height: 100%;
+    width: 300px;
+    background: rgba(0, 0, 0, 0.2);
+}

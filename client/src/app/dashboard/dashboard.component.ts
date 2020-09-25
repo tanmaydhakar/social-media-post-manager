@@ -12,4 +12,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  createPost(event){
+    event.preventDefault()
+    const target = event.target
+    console.log("here", target)
+  }
 }

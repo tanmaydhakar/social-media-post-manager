@@ -3,8 +3,8 @@
     </div>
 </div> -->
 
-<form>
-  <input type="file" name="attachment" accept="image/*">
-  <input type="text" placeholder="your post here ...">
+<form (submit)="createPost($event)">
+  <input type="file" name="image" accept="image/*" id="image">
+  <input type="text" placeholder="your post here ..." id="description">
   <button type="submit">Submit</button>
 </form>

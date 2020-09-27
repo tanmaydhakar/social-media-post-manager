@@ -5,10 +5,8 @@ const multerS3 = require('multer-s3');
 const uploadToS3 = function () {
     aws.config.update({
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-        accessKeyId: process.env.S3_ACCESS_KEY_IDS,
-        region: process.env.S3_REGION,
-        bucket: process.env.S3_BUCKET_NAME,
-        endpoint: "http://localhost:3000",
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        region: process.env.S3_REGION
     });
 
     const s3 = new aws.S3();
@@ -40,7 +38,7 @@ const uploadToS3 = function () {
     });
 }
 
-const singleUploadToS3 = function (req, res) {
+const singleUploadToS3 = function (req, res, next) {
 
     const upload = uploadToS3();
     const singleUpload = upload.single('image');
@@ -50,7 +48,7 @@ const singleUploadToS3 = function (req, res) {
             console.log(err, new Date());
             return false;
         } else {
-            return req.file.location;
+            return next();
         }
     });
 }

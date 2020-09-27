@@ -3,20 +3,41 @@ const mongoose = require('mongoose');
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 const constants = require(path.resolve('./modules/core/constants.controller')).constants;
+const fbAuth = require(path.resolve('./modules/core/facebookAuth.controller.js'));
 
 //creates post
 const create = function (req, res) {
-  if (!req.body || !req.user || !req.body.content || !req.body.scheduleTime) {
+  if (!req.body || !req.user || (!req.body.message && !req.file.location) || !req.body.scheduleTime) {
     return res.status(400).send('Bad request');
+  }
+
+  req.body.action = "create";
+  // const postData = {
+  //   action: "create",
+  //   scheduleTime: req.body.scheduleTime
+  // };
+
+  // if (req.body.message) {
+  //   postData.message = req.body.message;
+  // }
+  // if (req.file.location) {
+  //   postData.imageUrl = req.file.location;
+  // }
+
+  let facebookPost = fbAuth.postFacebook(req);
+
+  if(!facebookPost.id){
+    return res.status(500).send("Some error occured");
   }
 
   const post = {
     user: req.user._id,
     content: req.body.content,
     image: req.body.image,
-    scheduleDate: new Date(req.body.scheduleDate)
+    scheduleDate: new Date(req.body.scheduleDate),
+    postid: facebookPost.id
   };
-
+  
   Post.create(post, function (err, result) {
     if (err) {
       console.log(err, new Date());

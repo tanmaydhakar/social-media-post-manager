@@ -5,9 +5,9 @@ const path = require('path'),
 
 
 module.exports = function (app) {
-    
+
     //for creating post
-    app.post('/api/post', utility.singleUploadToS3, postController.create);
+    app.post('/api/post', userPolicy.isLoggedIn, utility.singleUploadToS3, postController.create);
 
     //for listing all posts by logged in user
     app.get('/api/post', userPolicy.isLoggedIn, postController.listAll);
@@ -17,8 +17,6 @@ module.exports = function (app) {
 
     //for deleting post
     app.delete('/api/post/:postId', userPolicy.isLoggedIn, postController.deletePost);
-
-    
 
 
 };

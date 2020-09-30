@@ -30,7 +30,7 @@ const register = function (req, res) {
 
 //for user login
 const login = function (req, res) {
-    return res.status(200).send("Success");
+    return res.status(200).send({user:req.user});
 }
 
 module.exports = {

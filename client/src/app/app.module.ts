@@ -8,6 +8,8 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RegisterComponent } from './register/register.component';
+import { FormsModule } from '@angular/forms';
+import { AuthGuardService as AuthGuard } from './auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { RegisterComponent } from './register/register.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
     RouterModule.forRoot([
       {
         path: 'login',
@@ -36,7 +39,8 @@ import { RegisterComponent } from './register/register.component';
       },
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
+        canActivate : [AuthGuard]
       }
     ])
   ],

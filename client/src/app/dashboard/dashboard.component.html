@@ -1,10 +1,93 @@
-<!-- <div class="page-container">
-    <div class="sidebar">
+<div class="wrapper">
+  <div class="sidebar">
+    <div class="list">
+      <h2>FACEBOOK</h2>
+      <ul class="btn-group">
+        <li class="btn btn-dark"
+          (click)="showDiv.schedulepost = !showDiv.schedulepost;showDiv.schedulephoto = false;showDiv.scheduledposts = false">
+          Schedule Post
+        </li>
+        <li class="btn btn-dark"
+          (click)="showDiv.schedulepost = false;showDiv.schedulephoto = !showDiv.schedulephoto;showDiv.scheduledposts = false">
+          Schedule Photo
+        </li>
+        <li class="btn btn-dark"
+          (click)="showDiv.schedulepost = false;showDiv.schedulephoto = false;showDiv.scheduledposts = !showDiv.scheduledposts">
+          Scheduled Posts
+        </li>
+        <li class="btn btn-dark" (click)="logout()">
+          Logout
+        </li>
+      </ul>
     </div>
-</div> -->
-
-<form (submit)="createPost($event)">
-  <input type="file" name="image" accept="image/*" id="image">
-  <input type="text" placeholder="your post here ..." id="description">
-  <button type="submit">Submit</button>
-</form>
+  </div>
+  <div class="main_content">
+    <div *ngIf="showDiv.schedulepost">
+      <form #myform="ngForm" (ngSubmit)="onSubmit(myform)">
+        <label for="message">Message: </label>
+        <textarea id="message" name="message" rows="4" cols="50" placeholder="Enter post here..." ngModel>
+      </textarea>
+        <br><br>
+        <label for="datetime">Choose Schedule Time: </label>
+        <mat-form-field>
+          <input matInput type="datetime-local" id="datetime" name="datetime" placeholder="start date"
+            [min-date]="minDateOut" seconds="true" ngModel>
+        </mat-form-field>
+        <br><br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <div *ngIf="showDiv.schedulephoto">
+      <label for="image">Image: </label>
+      <input type="file" accept="image/*" name="image" (change)="onFileSelected($event)">
+      <br><br>
+      <form #imgform="ngForm" (ngSubmit)="imgSubmit(imgform)">
+        <label for="caption">Caption: </label>
+        <textarea id="caption" name="caption" rows="4" cols="50" placeholder="Enter caption here..." ngModel>
+        </textarea>
+        <br><br>
+        <label for="datetime">Choose Schedule Time: </label>
+        <mat-form-field>
+          <input matInput type="datetime-local" id="datetime" name="datetime" placeholder="start date"
+            [min-date]="minDateOut" seconds="true" ngModel>
+        </mat-form-field>
+        <br><br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <div *ngIf="showDiv.scheduledposts">
+      <table>
+        <tr>
+          <th>Post ID</th>
+          <th>Scheduled Time</th>
+          <th>Post Status</th>
+          <th>Action</th>
+          <th>Edit Post</th>
+        </tr>
+        <tr *ngFor="let x of postsData">
+          <td>{{ x.pagePostId }}</td>
+          <td>{{ x.scheduleDate }}</td>
+          <td>{{ x.status }}</td>
+          <td>
+            <button (click)="deletePost(x)">Delete</button>
+          </td>
+          <td>
+            <div *ngIf=!x.imageUrl>
+              <form #imgform="ngForm" (ngSubmit)="editPost(x,imgform)">
+                <textarea id="message" name="message" rows="4" cols="20" placeholder="Enter message here..." ngModel>
+              </textarea>
+                <br>
+                <input type="submit" value="Submit">
+              </form>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div *ngIf="!showDiv.scheduledposts && !showDiv.schedulepost && !showDiv.schedulephoto">
+      <h1>S.M.P.M</h1>
+      <br>
+      <h2>(Social Media Post Manager)</h2>
+    </div>
+  </div>
+</div>

@@ -7,80 +7,92 @@ const fbAuth = require(path.resolve('./modules/core/facebookAuth.controller.js')
 
 //creates post
 const create = function (req, res) {
-  if (!req.body || !req.user || (!req.body.message && !req.file.location) || !req.body.scheduleTime) {
+  if (!req.body || !req.user || (!req.body.message && req.file && !req.file.location) || !req.body.scheduleTime) {
     return res.status(400).send('Bad request');
   }
 
+const date = new Date();
+
+if(new Date(req.body.scheduleTime).getTime - new Date().getTime() < 20*60*1000 || new Date(req.body.scheduleTime).getTime() - new Date().getTime() > 75*4*60*1000){
+  return res.status(422).send('Post can be scheduled for minimum 20 mins ahead and maximum of 75 days ahead');
+}
+
   req.body.action = "create";
-  // const postData = {
-  //   action: "create",
-  //   scheduleTime: req.body.scheduleTime
-  // };
 
-  // if (req.body.message) {
-  //   postData.message = req.body.message;
-  // }
-  // if (req.file.location) {
-  //   postData.imageUrl = req.file.location;
-  // }
-
-  let facebookPost = fbAuth.postFacebook(req);
-
-  if(!facebookPost.id){
-    return res.status(500).send("Some error occured");
-  }
-
-  const post = {
-    user: req.user._id,
-    content: req.body.content,
-    image: req.body.image,
-    scheduleDate: new Date(req.body.scheduleDate),
-    postid: facebookPost.id
-  };
-  
-  Post.create(post, function (err, result) {
-    if (err) {
-      console.log(err, new Date());
-      return res.status(500).send('Error occured');
+  fbAuth.postFacebook(req).then((postResult) => {
+    if (!postResult || !postResult.id) {
+      return res.status(500).send("Some error occured");
     } else {
-      return res.status(200).send('Post scheduled successfully');
+      const post = {
+        user: req.user._id,
+        message: req.body.message ? req.body.message : null,
+        imageUrl: (req.file && req.file.location) ? req.file.location : null,
+        scheduleDate: new Date(req.body.scheduleTime),
+        pagePostId: postResult.id
+      };
+
+      Post.create(post, function (err, result) {
+        if (err) {
+          console.log(err, new Date());
+          return res.status(500).send('Error occured');
+        } else {
+          return res.status(200).send('Post scheduled successfully');
+        }
+      });
     }
+  }).catch((error) => {
+    console.log(error, new Date());
+    return res.status(500).send("Some error occured");
   });
 }
 
 //updates post
 const update = function (req, res) {
-  if (!req.body || !req.user || !req.params.postId || !req.body.content || !req.body.scheduleTime) {
+  if (!req.body || !req.user || !req.params.postId || !req.body.message) {
     return res.status(400).send('Bad request');
   }
 
   const postId = mongoose.Types.ObjectId(req.params.postId);
-  const postData = {
-    content: req.body.content,
-    image: req.body.image,
-    scheduleDate: new Date(req.body.scheduleDate)
-  };
 
   Post.findOne({
-    '_id': postId
+    '_id': postId,
+    'user': req.user._id
   }, function (err, post) {
     if (err) {
       console.log(err, new Date());
       return res.status(500).send('Error occured');
+    } else if (!post) {
+      return res.status(422).send('Post does not exists');
     } else if (post.status !== constants.POST_STATUS[0]) {
       return res.status(422).send('You cant update this post now');
     } else {
-      Post.updateOne({
-        '_id': postId
-      }, {
-        '$set': postData
-      }, function (err, result) {
-        if (err) {
-          console.log(err, new Date());
-          return res.status(500).send('Error occured');
+      req.body.action = 'update';
+      req.body.pagePostId = post.pagePostId;
+
+      fbAuth.postFacebook(req).then((postResult) => {
+
+        if (!postResult || !postResult.success) {
+          return res.status(500).send("Some error occured");
         } else {
-          return res.status(200).send('Post updated successfully');
+          const postData = {
+            message: req.body.message
+          };
+          Post.updateOne({
+            '_id': postId
+          }, {
+            '$set': postData
+          }, function (err, result) {
+            if (err) {
+              console.log(err, new Date());
+              return res.status(500).send('Error occured');
+            } else {
+              return res.status(200).send('Post updated successfully');
+            }
+          });
         }
+      }).catch((error) => {
+        console.log(error, new Date());
+        return res.status(500).send("Some error occured");
       });
     }
   });
@@ -100,18 +112,33 @@ const deletePost = function (req, res) {
     if (err) {
       console.log(err, new Date());
       return res.status(500).send('Error occured');
+    } else if (!post) {
+      return res.status(422).send('Post does not exists');
     } else if (post.status !== constants.POST_STATUS[0]) {
       return res.status(422).send('You cant delete this post now');
     } else {
-      Post.deleteOne({
-        '_id': postId
-      }, function (err, result) {
-        if (err) {
-          console.log(err, new Date());
-          return res.status(500).send('Error occured');
+      req.body.action = 'delete';
+      req.body.pagePostId = post.pagePostId;
+
+      fbAuth.postFacebook(req).then((postResult) => {
+
+        if (!postResult || !postResult.success) {
+          return res.status(500).send("Some error occured");
         } else {
-          return res.status(200).send('Post deleted successfully');
+          Post.deleteOne({
+            '_id': postId
+          }, function (err, result) {
+            if (err) {
+              console.log(err, new Date());
+              return res.status(500).send('Error occured');
+            } else {
+              return res.status(200).send('Post deleted successfully');
+            }
+          });
         }
+      }).catch((error) => {
+        console.log(error, new Date());
+        return res.status(500).send("Some error occured");
       });
     }
   });

@@ -1,0 +1,40 @@
+body {
+  background-color: blue;
+  margin: 0;
+  padding: 0;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+  background-color: #3b5998;
+}
+
+h2 {
+  padding: 10px;
+}
+
+a {
+  width: 300px;
+  background-color: #D3D3D3;
+  padding: 35px;
+  margin: 20px;
+  border: 10px white;
+  box-shadow: 1px 1px 1px white;
+  border-radius: 10px;
+  text-decoration: none;
+  color: white;
+  text-shadow: 1px 1px 1px black, 1px 1px 1px black, 1px 1px 1px black, 1px 1px 1px black;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  cursor: pointer;
+}

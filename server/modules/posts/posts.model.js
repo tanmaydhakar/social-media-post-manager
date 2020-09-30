@@ -8,9 +8,8 @@ var Post = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
-    content: {
-        type: String,
-        required: true
+    message: {
+        type: String
     },
     imageUrl: {
         type: String
@@ -18,11 +17,15 @@ var Post = new Schema({
     status: {
         type: String,
         enum: Constants.POST_STATUS,
-        default: ['Scheduled']
+        default: 'Scheduled'
     },
     scheduleDate: {
         type: Date,
         required: true
+    },
+    pagePostId: {
+        type: String,
+        required:true
     }
 }, {
     timestamps: true

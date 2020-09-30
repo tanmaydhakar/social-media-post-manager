@@ -9,11 +9,8 @@
   "author": "tanmay",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
     "aws-sdk": "^2.761.0",
-=======
     "axios": "^0.20.0",
->>>>>>> feature-fbauth
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
@@ -22,6 +19,7 @@
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
     "nodemailer": "^6.4.11",
+    "nodemon": "^2.0.4",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.0.1"

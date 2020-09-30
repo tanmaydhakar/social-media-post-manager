@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -8,7 +9,7 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private Auth: AuthService) { }
+  constructor(private Auth: AuthService, private router : Router) { }
 
   ngOnInit(): void {
   }
@@ -23,6 +24,16 @@ export class RegisterComponent implements OnInit {
       email: target.querySelector('#email').value
     }
 
-    this.Auth.registerUser(userData);
+    this.Auth.registerUser(userData).then((response) => {
+      this.router.navigate(['/login'])
+    }, (error) => {
+      if (error.error.includes('Please fill a valid email address')) {
+        window.alert('Invalid email address');
+      } else if (error.error.includes('duplicate key error') && error.error.includes('index: email')) {
+        window.alert('A user with the given email is already registered');
+      } else {
+        window.alert(error.error);
+      }
+    });
   }
 }

@@ -13,37 +13,78 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getUserDetails(username, password) {
+  public isAuthenticated() : Boolean {
+    let userData = localStorage.getItem('userInfo')
+    if(userData && JSON.parse(userData)){
+      return true;
+    }
+    return false;
+  }
+
+  public setUserInfo(user){
+    localStorage.setItem('userInfo', JSON.stringify(user));
+  }
+
+  public getUserDetails(username, password) {
     return this.http.post('/api/login', {
       username,
       password
-    }, {
-      responseType: 'text'
-    }).subscribe(data => {
-      this.router.navigate(['/dashboard'])
-    }, (error) => {
-      if (error.error == 'Unauthorized') {
-        window.alert("User not registered");
-      } else {
-        console.log(error)
-        window.alert(error.error);
-      }
-    })
-  }
+    }).toPromise()
+  };
 
-  registerUser(userdata) {
+  public registerUser(userdata) {
     return this.http.post('/api/register', userdata, {
       responseType: 'text'
-    }).subscribe(data => {
-      this.router.navigate(['/login'])
-    }, (error) => {
-      if (error.error.includes('Please fill a valid email address')) {
-        window.alert('Invalid email address');
-      } else if (error.error.includes('duplicate key error') && error.error.includes('index: email')) {
-        window.alert('A user with the given email is already registered');
-      } else {
-        window.alert(error.error);
-      }
-    })
+    }).toPromise();
+  }
+
+  public logout(){
+    localStorage.removeItem('userInfo');
+    localStorage.clear();
+    return this.http.get('/api/logout', {
+      responseType: 'text'
+    }).toPromise()
+  }
+
+  public createPost(postData){
+    return this.http.post("/api/post", postData, {
+      withCredentials: true,
+      responseType: 'text'
+    }).toPromise();
+  }
+
+  public createImagePost(postData){
+    const formData = new FormData();
+    formData.append('image', postData.file);
+    formData.append('message', postData.message);
+    formData.append('scheduleTime', postData.scheduleTime);
+    return this.http.post("/api/post", formData, {
+      withCredentials: true,
+      responseType: 'text'
+    }).toPromise();
+  }
+
+  public listAllPosts(){
+    return this.http.get("/api/post", {
+      withCredentials: true,
+      responseType: 'text'
+    }).toPromise();
+  }
+
+  public deletePost(postId){
+    return this.http.delete(`/api/post/${postId}`, {
+      withCredentials: true,
+      responseType: 'text'
+    }).toPromise();
+  }
+
+  public editPost(postId, message){
+    const patchData = {
+      message:message
+    }
+    return this.http.patch(`/api/post/${postId}`, patchData, {
+      withCredentials: true,
+      responseType: 'text'
+    }).toPromise();
   }
 }

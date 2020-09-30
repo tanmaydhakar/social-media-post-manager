@@ -57,18 +57,19 @@ const serverSetup = function () {
         extended: true
     }));
 
-    passport.use(new LocalStrategy(User.authenticate()));
-    passport.serializeUser(User.serializeUser());
-    passport.deserializeUser(User.deserializeUser());
-    app.use(passport.initialize());
-    app.use(passport.session());
-
     setupConfigs().then(() => {
         app.use(require("express-session")({
             secret: process.env.SECRET,
             resave: false,
             saveUninitialized: false
         }));
+
+        passport.use(new LocalStrategy(User.authenticate()));
+        passport.serializeUser(User.serializeUser());
+        passport.deserializeUser(User.deserializeUser());
+        app.use(passport.initialize());
+        app.use(passport.session());
+        
         registerModelsAndRoutes().then(() => {
             setupMongoDB().then(() => {
                 app.use('/', expressRouter);

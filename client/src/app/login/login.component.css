@@ -8,13 +8,17 @@ form {
     flex-direction: column;
 }
 
+h2 {
+    color:#EBF5FB;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items:center;
     padding: 20px;
-    background: #eee;
+    background: #3b5998;
     border-radius: 20px;
 }
 
